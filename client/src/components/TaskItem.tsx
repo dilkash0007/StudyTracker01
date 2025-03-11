@@ -59,7 +59,7 @@ const TaskItem = ({ task, showActions = true }: TaskItemProps) => {
         toast({
           title: "Task completed",
           description: `"${task.title}" marked as complete`,
-          variant: "success",
+          variant: "default",
         });
       }
     },
