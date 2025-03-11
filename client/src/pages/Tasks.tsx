@@ -21,7 +21,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 const taskFormSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string().optional(),
-  dueDate: z.string().optional(),
+  dueDate: z.coerce.date().optional().nullable(),
   priority: z.enum(["high", "medium", "low"]),
   subject: z.string().optional(),
   userId: z.number().default(1), // Default user ID
@@ -62,7 +62,7 @@ const Tasks = () => {
       toast({
         title: "Task created",
         description: "Your new task has been created successfully",
-        variant: "success",
+        variant: "default",
       });
     },
     onError: (error) => {
@@ -80,7 +80,7 @@ const Tasks = () => {
     defaultValues: {
       title: "",
       description: "",
-      dueDate: "",
+      dueDate: null,
       priority: "medium",
       subject: ""
     }
@@ -476,7 +476,14 @@ const Tasks = () => {
                   <FormItem>
                     <FormLabel>Due Date</FormLabel>
                     <FormControl>
-                      <Input type="datetime-local" {...field} />
+                      <Input 
+                        type="datetime-local" 
+                        value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ''} 
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(value ? new Date(value) : null);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
