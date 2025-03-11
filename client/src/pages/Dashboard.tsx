@@ -61,7 +61,22 @@ const Dashboard = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    }
+  };
+  
+  // Item animation
+  const itemAnimation = {
+    hidden: { y: 20, opacity: 0 },
+    show: { 
+      y: 0, 
+      opacity: 1,
+      transition: { 
+        type: "spring",
+        stiffness: 100,
+        damping: 12
       }
     }
   };
@@ -73,9 +88,14 @@ const Dashboard = () => {
           className="mb-6"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          transition={{ 
+            type: "spring",
+            stiffness: 100,
+            damping: 15
+          }}
         >
           <h2 className="text-2xl font-bold">Dashboard</h2>
-          <p className="text-dark-100 dark:text-light-300">Welcome back, Jamie! Here's your study overview.</p>
+          <p className="text-dark-100 dark:text-light-300">Welcome to your study tracker! Start adding your study sessions and tasks.</p>
         </motion.div>
         
         {/* Quick Stats */}
@@ -85,52 +105,60 @@ const Dashboard = () => {
           initial="hidden"
           animate="show"
         >
-          <StatsCard 
-            title="Study Hours"
-            value={statsLoading ? "0" : `${stats?.totalStudyHours.toFixed(1) || "0"}`}
-            icon={<Clock className="h-5 w-5" />}
-            iconBgColor="bg-primary bg-opacity-10"
-            iconColor="text-primary"
-            trend={{ value: "2.3% from last week", isPositive: true }}
-          />
+          <motion.div variants={itemAnimation}>
+            <StatsCard 
+              title="Study Hours"
+              value={statsLoading ? "0" : `${stats?.totalStudyHours.toFixed(1) || "0"}`}
+              icon={<Clock className="h-5 w-5" />}
+              iconBgColor="bg-primary bg-opacity-20"
+              iconColor="text-primary"
+              trend={{ value: "Start tracking your study hours", isPositive: true }}
+            />
+          </motion.div>
           
-          <StatsCard 
-            title="Tasks Completed"
-            value={statsLoading ? "0/0" : `${stats?.completedTasks || "0"}/${stats?.totalTasks || "0"}`}
-            icon={<CheckSquare className="h-5 w-5" />}
-            iconBgColor="bg-secondary bg-opacity-10"
-            iconColor="text-secondary"
-            trend={{ value: "10% from last week", isPositive: true }}
-          />
+          <motion.div variants={itemAnimation}>
+            <StatsCard 
+              title="Tasks Completed"
+              value={statsLoading ? "0/0" : `${stats?.completedTasks || "0"}/${stats?.totalTasks || "0"}`}
+              icon={<CheckSquare className="h-5 w-5" />}
+              iconBgColor="bg-secondary bg-opacity-20"
+              iconColor="text-secondary"
+              trend={{ value: "Add and complete tasks", isPositive: true }}
+            />
+          </motion.div>
           
-          <StatsCard 
-            title="Study Streak"
-            value={statsLoading ? "0 days" : `${stats?.streak || "0"} days`}
-            icon={<Flame className="h-5 w-5" />}
-            iconBgColor="bg-warning bg-opacity-10"
-            iconColor="text-warning"
-            trend={{ value: "Keep it up!", isPositive: true }}
-          />
+          <motion.div variants={itemAnimation}>
+            <StatsCard 
+              title="Study Streak"
+              value={statsLoading ? "0 days" : `${stats?.streak || "0"} days`}
+              icon={<Flame className="h-5 w-5" />}
+              iconBgColor="bg-warning bg-opacity-20"
+              iconColor="text-warning"
+              trend={{ value: "Study daily to build a streak", isPositive: true }}
+            />
+          </motion.div>
           
-          <StatsCard 
-            title="Goal Progress"
-            value="68%"
-            icon={<Target className="h-5 w-5" />}
-            iconBgColor="bg-info bg-opacity-10"
-            iconColor="text-info"
-            trend={{ value: "5% from last week", isPositive: false }}
-          />
+          <motion.div variants={itemAnimation}>
+            <StatsCard 
+              title="Goal Progress"
+              value="0%"
+              icon={<Target className="h-5 w-5" />}
+              iconBgColor="bg-info bg-opacity-20"
+              iconColor="text-info"
+              trend={{ value: "Set goals in settings", isPositive: true }}
+            />
+          </motion.div>
         </motion.div>
         
         {/* Today's Schedule and Upcoming Tasks */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2">
-            <motion.div 
-              className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card h-full"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div variants={itemAnimation} className="lg:col-span-2">
+            <div className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card h-full">
               <h3 className="text-lg font-semibold mb-4">Today's Schedule</h3>
               
               {sessionsLoading ? (
@@ -140,14 +168,14 @@ const Dashboard = () => {
               ) : sortedSessions.length === 0 ? (
                 <div className="flex flex-col justify-center items-center h-40 text-dark-100 dark:text-light-300">
                   <p>No study sessions scheduled for today</p>
-                  <button className="mt-4 p-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition duration-200">
+                  <button className="mt-4 p-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition duration-300">
                     Add Study Session
                   </button>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {sortedSessions.map((session) => (
-                    <div key={session.id} className="flex items-center p-2 rounded-lg hover:bg-light-200 dark:hover:bg-dark-400">
+                    <div key={session.id} className="flex items-center p-2 rounded-lg hover:bg-light-200 dark:hover:bg-dark-400 transition-colors duration-200">
                       <div className="w-16 text-center">
                         <span className="text-dark-100 dark:text-light-300 text-sm">
                           {format(new Date(session.startTime), 'h:mm a')}
@@ -170,16 +198,11 @@ const Dashboard = () => {
                   ))}
                 </div>
               )}
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
           
-          <div>
-            <motion.div 
-              className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card h-full"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
+          <motion.div variants={itemAnimation}>
+            <div className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card h-full">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold">Upcoming Tasks</h3>
                 <button className="text-primary text-sm font-medium">View All</button>
@@ -192,6 +215,7 @@ const Dashboard = () => {
               ) : upcomingTasks.length === 0 ? (
                 <div className="flex flex-col justify-center items-center h-40 text-dark-100 dark:text-light-300">
                   <p>No upcoming tasks</p>
+                  <p className="text-sm mt-2 text-center">Add tasks to track your upcoming assignments</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -201,21 +225,21 @@ const Dashboard = () => {
                 </div>
               )}
               
-              <button className="w-full mt-4 p-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition duration-200">
+              <button className="w-full mt-4 p-2 border border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition duration-300">
                 Add New Task
               </button>
-            </motion.div>
-          </div>
-        </div>
+            </div>
+          </motion.div>
+        </motion.div>
         
         {/* Progress Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <motion.div 
-            className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div variants={itemAnimation} className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card">
             <h3 className="text-lg font-semibold mb-4">Time Per Subject</h3>
             {statsLoading ? (
               <div className="flex justify-center items-center h-64">
@@ -224,18 +248,14 @@ const Dashboard = () => {
             ) : stats?.subjectDistribution && stats.subjectDistribution.length > 0 ? (
               <SubjectDistributionChart data={stats.subjectDistribution} height={250} />
             ) : (
-              <div className="flex justify-center items-center h-64 text-dark-100 dark:text-light-300">
+              <div className="flex flex-col justify-center items-center h-64 text-dark-100 dark:text-light-300">
                 <p>No study data available</p>
+                <p className="text-sm mt-2">Track your study sessions to see your time distribution</p>
               </div>
             )}
           </motion.div>
           
-          <motion.div 
-            className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
+          <motion.div variants={itemAnimation} className="bg-white dark:bg-dark-500 rounded-xl p-4 shadow-card">
             <h3 className="text-lg font-semibold mb-4">Weekly Progress</h3>
             {statsLoading ? (
               <div className="flex justify-center items-center h-64">
@@ -244,12 +264,13 @@ const Dashboard = () => {
             ) : stats?.dailyStats && stats.dailyStats.length > 0 ? (
               <WeeklyProgressChart data={stats.dailyStats} height={250} />
             ) : (
-              <div className="flex justify-center items-center h-64 text-dark-100 dark:text-light-300">
+              <div className="flex flex-col justify-center items-center h-64 text-dark-100 dark:text-light-300">
                 <p>No progress data available</p>
+                <p className="text-sm mt-2">Add study sessions to track your weekly progress</p>
               </div>
             )}
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </main>
   );
