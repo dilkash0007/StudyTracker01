@@ -109,52 +109,68 @@ const TaskItem = ({ task, showActions = true }: TaskItemProps) => {
   
   return (
     <motion.div 
-      className={`task-item p-4 bg-light-200 dark:bg-dark-400 rounded-lg ${task.status === 'completed' ? 'opacity-60' : ''}`}
-      whileHover={{ y: -2, boxShadow: '0 6px 8px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.06)' }}
+      className={`task-item p-4 bg-white dark:bg-dark-500 rounded-xl shadow-sm ${task.status === 'completed' ? 'opacity-70' : ''}`}
+      whileHover={{ 
+        y: -3, 
+        boxShadow: '0 8px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        transition: { type: 'spring', stiffness: 300, damping: 15 }
+      }}
       initial={{ y: 10, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-        <div className="flex items-start">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex items-start gap-3">
           <Checkbox 
             checked={isChecked} 
             onCheckedChange={handleCheckboxChange}
-            className="mt-1 mr-3"
+            className="mt-1 h-4 w-4 rounded-sm"
           />
           <div>
-            <h4 className={`font-medium ${task.status === 'completed' ? 'line-through' : ''}`}>{task.title}</h4>
+            <h4 className={`font-medium ${task.status === 'completed' ? 'line-through text-dark-100 dark:text-light-400' : ''}`}>
+              {task.title}
+            </h4>
             {task.description && (
-              <p className="text-xs text-dark-100 dark:text-light-300">{task.description}</p>
+              <p className="text-xs text-dark-100 dark:text-light-300 mt-1 max-w-md">{task.description}</p>
+            )}
+            {task.subject && (
+              <span className="inline-block mt-1.5 text-xs text-dark-100 dark:text-light-400 bg-light-300 dark:bg-dark-400 px-2 py-0.5 rounded">
+                {task.subject}
+              </span>
             )}
           </div>
         </div>
-        <div className="flex items-center space-x-3 mt-2 sm:mt-0">
+        
+        <div className="flex flex-wrap items-center gap-3 mt-2 sm:mt-0 ml-7 sm:ml-0">
           <span className={`px-2 py-1 text-xs font-medium ${getBadgeColor(task.priority)} rounded-full`}>
             {task.status === 'completed' ? 'Completed' : task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
           </span>
           {task.dueDate && (
-            <span className="text-sm text-dark-100 dark:text-light-300">
+            <span className="text-xs text-dark-100 dark:text-light-300 bg-light-100 dark:bg-dark-400 px-2 py-1 rounded-full">
               {formatDueDate(task.dueDate)}
             </span>
           )}
           {showActions && (
-            <div className="flex space-x-1">
+            <div className="flex space-x-2">
               {task.status !== 'completed' && (
-                <button 
-                  className="text-dark-100 dark:text-light-300 hover:text-primary"
+                <motion.button 
+                  className="text-dark-100 dark:text-light-300 hover:text-primary bg-light-100 dark:bg-dark-400 p-1.5 rounded-full"
                   aria-label="Edit task"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <EditIcon className="h-4 w-4" />
-                </button>
+                  <EditIcon className="h-3.5 w-3.5" />
+                </motion.button>
               )}
-              <button 
-                className="text-dark-100 dark:text-light-300 hover:text-danger"
+              <motion.button 
+                className="text-dark-100 dark:text-light-300 hover:text-danger bg-light-100 dark:bg-dark-400 p-1.5 rounded-full"
                 onClick={handleDelete}
                 aria-label="Delete task"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <TrashIcon className="h-4 w-4" />
-              </button>
+                <TrashIcon className="h-3.5 w-3.5" />
+              </motion.button>
             </div>
           )}
         </div>

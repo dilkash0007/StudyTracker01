@@ -83,7 +83,7 @@ const Dashboard = () => {
   
   return (
     <main className="flex-1 overflow-auto">
-      <div className="container mx-auto p-4 pb-24">
+      <div className="container mx-auto px-3 sm:px-4 py-4 pb-24">
         <motion.div 
           className="mb-6"
           initial={{ y: -20, opacity: 0 }}
@@ -175,7 +175,7 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-3">
                   {sortedSessions.map((session) => (
-                    <div key={session.id} className="flex items-center p-2 rounded-lg hover:bg-light-200 dark:hover:bg-dark-400 transition-colors duration-200">
+                    <div key={session.id} className="flex flex-wrap sm:flex-nowrap items-center p-2 rounded-lg hover:bg-light-200 dark:hover:bg-dark-400 transition-colors duration-200">
                       <div className="w-16 text-center">
                         <span className="text-dark-100 dark:text-light-300 text-sm">
                           {format(new Date(session.startTime), 'h:mm a')}
@@ -186,12 +186,18 @@ const Dashboard = () => {
                         session.subject.toLowerCase() === 'mathematics' || session.subject.toLowerCase() === 'math' ? 'bg-secondary' :
                         session.subject.toLowerCase() === 'chemistry' ? 'bg-warning' :
                         session.subject.toLowerCase() === 'literature' ? 'bg-info' : 'bg-primary'
-                      } rounded-full mx-4`}></div>
-                      <div className="flex-1">
+                      } rounded-full mx-4 hidden sm:block`}></div>
+                      <div className={`w-full sm:hidden h-1 my-2 ${
+                        session.subject.toLowerCase() === 'physics' ? 'bg-primary' :
+                        session.subject.toLowerCase() === 'mathematics' || session.subject.toLowerCase() === 'math' ? 'bg-secondary' :
+                        session.subject.toLowerCase() === 'chemistry' ? 'bg-warning' :
+                        session.subject.toLowerCase() === 'literature' ? 'bg-info' : 'bg-primary'
+                      } rounded-full`}></div>
+                      <div className="flex-1 w-full sm:w-auto">
                         <h4 className="font-medium">{session.subject} Study Session</h4>
                         <p className="text-sm text-dark-100 dark:text-light-300">{session.description || 'No description'}</p>
                       </div>
-                      <div className="text-sm text-dark-100 dark:text-light-300">
+                      <div className="text-sm text-dark-100 dark:text-light-300 w-full sm:w-auto text-right mt-2 sm:mt-0">
                         {formatTime(session.duration)}
                       </div>
                     </div>
